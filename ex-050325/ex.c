@@ -97,49 +97,73 @@ char	tttrace[]	= { '/','d','e','v','/','t','t','y','x','x',0 };
  *
  * ex.c			Entry point and routines handling interrupt, hangup
  *			signals; initialization code.
+ *			处理中断、挂断信号的入口点和例程;初始化代码。
  *
  * ex_addr.c		Address parsing routines for command mode decoding.
  *			Routines to set and check address ranges on commands.
+ *			用于命令模式解码的地址解析例程。
+ *			用于设置和检查命令地址范围的例程。
  *
  * ex_cmds.c		Command mode command decoding.
+ *                  命令模式命令解码。
  *
  * ex_cmds2.c		Subroutines for command decoding and processing of
  *			file names in the argument list.  Routines to print
  *			messages and reset state when errors occur.
+ *          用于命令解码和处理参数列表中的文件名的子程序。
+ *          发生错误时打印消息和重置状态的例程。
+ *			
  *
  * ex_cmdsub.c		Subroutines which implement command mode functions
  *			such as append, delete, join.
+ *          实现命令模式功能的子程序,例如:追加、删除、加入。
  *
  * ex_data.c		Initialization of options.
+ *                  初始化选项。
  *
  * ex_get.c		Command mode input routines.
+ *              命令模式输入例程。
  *
  * ex_io.c		General input/output processing: file i/o, unix
  *			escapes, filtering, source commands, preserving
  *			and recovering.
+ *          一般输入/输出处理：文件 i/o、unix 转义、过滤、源命令、保存和恢复。
+ *			
  *
  * ex_put.c		Terminal driving and optimizing routines for low-level
  *			output (cursor-positioning); output line formatting
  *			routines.
+ *			低电平输出的终端驱动和优化例程（光标定位）； 输出行格式化例程。
  *
  * ex_re.c		Global commands, substitute, regular expression
  *			compilation and execution.
+ *          全局命令、替换、正则表达式编译和执行。
+ *			
  *
  * ex_set.c		The set command.
+ *              设置命令。
  *
  * ex_subr.c		Loads of miscellaneous subroutines.
+ *                   大量杂项子程序。
+ *                  
  *
  * ex_temp.c		Editor buffer routines for main buffer and also
  *			for named buffers (Q registers if you will.)
+ *			主缓冲区的编辑器缓冲区例程以及用于命名缓冲区(如果您愿意，可以使用 Q 寄存器。)
  *
  * ex_tty.c		Terminal dependent initializations from termcap
  *			data base, grabbing of tty modes (at beginning
  *			and after escapes).
+ *			来自 termcap 数据库的终端相关初始化，获取 tty 模式（在开始和转义后）。
  *
  * ex_unix.c		Routines for the ! command and its variations.
+ *                关于！命令及其变体的例程
+ *                  
  *
  * ex_v*.c		Visual/open mode routines... see ex_v.c for a
  *			guide to the overall organization.
+ *          可视/开放模式例程...有关整个组织的指南，请参见 ex_v.c。
+ *			
  */
 
 static char *progname;

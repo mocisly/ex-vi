@@ -87,42 +87,62 @@ static char sccsid[] = "@(#)ex_v.c	1.17 (gritter) 11/27/04";
 /*
  * Entry points to open and visual from command mode processor.
  * The open/visual code breaks down roughly as follows:
+ * 从命令模式处理器打开和可视化的入口点。打开/可视化代码大致分解如下：
  *
  * ex_v.c	entry points, checking of terminal characteristics
+ *          入口点，检查终端特性
  *
  * ex_vadj.c	logical screen control, use of intelligent operations
  *		insert/delete line and coordination with screen image;
  *		updating of screen after changes.
+ *      逻辑画面控制，使用智能操作插入/删除线和与屏幕图像协调； 更改后更新屏幕。
+ *		
  *
  * ex_vget.c	input of single keys and reading of input lines
  *		from the echo area, handling of memory for repeated
  *		commands and small saved texts from inserts and partline
  *		deletes, notification of multi line changes in the echo
  *		area.
+ *      输入单个键并从回显区域读取输入行，处理重复命令的内存和插入和部分行删除的小保存文本，
+ *       回显区域中多行更改的通知。
+ *		
  *
  * ex_vmain.c	main command decoding, some command processing.
+ *              主要指令解码，部分指令处理。
+ *              
  *
  * ex_voperate.c   decoding of operator/operand sequences and
  *		contextual scans, implementation of word motions.
+ *      操作符/操作数序列的解码和上下文扫描，单词运动的实现。
+ *		
  *
  * ex_vops.c	major operator interfaces, undos, motions, deletes,
  *		changes, opening new lines, shifts, replacements and yanks
  *		coordinating logical and physical changes.
+ *		主要的操作员界面、撤消、动作、删除、更改、打开新行、班次、替换和拉动协调逻辑和物理更改。
  *
  * ex_vops2.c	subroutines for operator interfaces in ex_vops.c,
  *		insert mode, read input line processing at lowest level.
+ *      ex_vops.c 中操作员界面的子例程，插入模式，在最低级别读取输入行处理。
+ *		
  *
  * ex_vops3.c	structured motion definitions of ( ) { } and [ ] operators,
  *		indent for lisp routines, () and {} balancing. 
+ *      ( ) { } 和 [ ] 运算符的结构化运动定义，lisp 例程的缩进，() 和 {} 平衡。
+ *		
  *
  * ex_vput.c	output routines, clearing, physical mapping of logical cursor
  *		positioning, cursor motions, handling of insert character
  *		and delete character functions of intelligent and unintelligent
  *		terminals, visual mode tracing routines (for debugging),
  *		control of screen image and its updating.
+ *		输出例程、清除、逻辑光标定位的物理映射、光标移动、智能和非智能终端的插入字符和删除字符功能的处理，
+ *       可视模式跟踪例程（用于调试）、屏幕图像控制及其更新。
  *
  * ex_vwind.c	window level control of display, forward and backward rolls,
  *		absolute motions, contextual displays, line depth determination
+ *		显示的窗口水平控制，向前和向后滚动，
+ *      绝对运动，上下文显示，线深度确定
  */
 
 JMP_BUF venv;

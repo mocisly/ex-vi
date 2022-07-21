@@ -117,47 +117,51 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <ctype.h>
-#include <errno.h>
-#include <signal.h>
-#include <setjmp.h>
+#include <sys/types.h> //基本系统数据类型
+#include <sys/param.h> //系统定时器频率
+#include <sys/stat.h>  //获得文本属性
+#include <ctype.h>     //是C标准函数库中的头文件，定义了一批C语言字符分类函数（C character classification functions），用于测试字符是否属于特定的字符类别，如字母字符、控制字符等等。既支持单字节字符，也支持宽字符。
+#include <errno.h>    //C标准函式库里的标头档，定义了通过错误码来回报错误资讯的宏。
+#include <signal.h>    //signal.h是C标准函数库中的信号处理部分， 定义了程序执行时如何处理不同的信号。信号用作进程间通信， 报告异常行为（如除零）、用户的一些按键组合（如同时按下Ctrl与C键，产生信号SIGINT）。
+#include <setjmp.h>   //setjmp.h 头文件定义了宏 setjmp()、函数 longjmp() 和变量类型 jmp_buf，该变量类型会绕过正常的函数调用和返回规则。
 
-#include <stdarg.h>
+ 
+
+#include <stdarg.h>   //stdarg.h 头文件定义了一个变量类型 va_list 和三个宏，这三个宏可用于在参数个数未知（即参数个数可变）时获取函数中的参数。可变参数的函数通在参数列表的末尾是使用省略号(,...)定义的。
 #include <string.h>
 #include <stdlib.h>
 
 #ifdef	BIT8
 #ifndef	ISO8859_1
-#include <locale.h>
+#include <locale.h>  //<locale.h> 头文件包含了与区域设置（本地设置、地域设置）有关的函数和类型。
 #endif
 #endif
 
 #ifdef	MB
-#include <wchar.h>
-#include <wctype.h>
+#include <wchar.h>   //宽字符使用两个或四个字节表示一个字符，导致 C 语言常规的字符处理函数都会失效。wchar.h 定义了许多宽字符专用的处理函数。
+#include <wctype.h>  //<wctype.h> 是 <ctype.h> 的宽字符版本,引入 <wctype.h> 头文件后，C就能够更好地处理英文以外的语言了，例如汉语、日语、韩语、德语等，此时C才是真正意义上的全球化编程语言。
 #endif
 
-#include <termios.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <limits.h>
+#include <termios.h>  //Linux 下串口驱动头文件
+#include <fcntl.h>   //fcntl.h，是unix标准中通用的头文件，其中包含的相关函数有 open，fcntl，shutdown，unlink，fclose等！
+#include <unistd.h>  //提供对 POSIX 操作系统 API 的访问功能的头文件的名称。该头文件由 POSIX.1 标准（可移植系统接口）提出，故所有遵循该标准的操作系统和编译器均应提供该头文件（如 Unix 的所有官方版本，包括 Mac OS X、Linux 等）。
+#include <limits.h> //limits.h专门用于检测整型数据数据类型的表达值范围。
 #ifndef	TIOCGWINSZ
-#include <sys/ioctl.h>
+#include <sys/ioctl.h> //ioctl 是设备驱动程序中设备控制接口函数，一个字符设备驱动通常会实现设备打开、关闭、读、写等功能，在一些需要细分的情境下，如果需要扩展新的功能，通常以增设 ioctl() 命令的方式实现。 
 #endif
 
 #include "config.h"
 
 typedef	void	(*shand)(int);
 #ifdef	signal
-#undef	signal
+#undef	signal  //防止宏定义重复
 #endif
 #define	signal(a, b)	setsig((a), (b))
 
 /*
  * Avoid clobbering of automatic variables with an ANSI C compiler.
+ *避免使用 ANSI C 编译器破坏自动变量。
+ *
  */
 #define		CLOBBGRD(a)	(void)(&(a));
 
@@ -220,6 +224,13 @@ typedef	short	bbloc;
  * and "strout" code from the standard i/o library and mung it for our
  * purposes to avoid dragging in the stdio library headers, etc if we
  * are not debugging.  Such a modified printf exists in "printf.c" here.
+ *
+ * 编辑器通常不使用标准 i/o 库。 因为我们期望编辑器是一个被大量使用的程序，
+ * 并且因为它进行了大量的输入/输出处理，所以它适合直接调用低级读/写原语。 
+ * 事实上，在调试编辑器时，我们使用标准的 i/o 库。 
+ * 在任何情况下，编辑器都需要一个通过“putchar”打印的 printf ala 旧版本 6 printf。
+ * 因此，我们通常会从标准 i/o 库中窃取“printf.c”和“strout”代码的副本，并将其修改为我们的目的，
+ * 以避免在不调试时拖入 stdio 库头等。 这种修改过的 printf 存在于此处的“printf.c”中。
  */
 #ifdef TRACE
 #	include <stdio.h>
@@ -290,6 +301,9 @@ typedef	sigjmp_buf	JMP_BUF;
  * very little code.  The offsets for the option names in the structure
  * are generated automagically from the structure initializing them in
  * ex_data.c... see the shell script "makeoptions".
+ *编辑器中的选项通常由“value(name)”引用，其中 name 全部大写，即“value(PROMPT)”。
+ *这实际上是一个宏，它扩展为静态结构中的固定字段，因此生成的代码非常少。 
+ *结构中选项名称的偏移量是从在 ex_data.c 中初始化它们的结构自动生成的...请参阅 shell 脚本“makeoptions”。
  */
 struct	option {
 	char	*oname;
@@ -312,11 +326,14 @@ extern	 struct	option options[NOPTS + 1];
 
 /*
  * Character constants and bits
+ *字符常量和位
  *
  * The editor uses the QUOTE bit as a flag to pass on with characters
  * e.g. to the putchar routine.  The editor never uses a simple char variable.
  * Only arrays of and pointers to characters are used and parameters and
  * registers are never declared character.
+ * 编辑器使用 QUOTE 位作为标志与字符一起传递。例如 到 putchar 例程。 
+ * 编辑器从不使用简单的 char 变量。仅使用字符数组和指向字符的指针，并且从不将参数和寄存器声明为字符。
  */
 #ifdef	CTRL
 #undef	CTRL
@@ -340,6 +357,7 @@ extern	 struct	option options[NOPTS + 1];
 
 /*
  * This type is used to represent a single character cell.
+ * 此类型用于表示单个字符单元格。
  */
 typedef int	cell;
 var	int	TRIM;
@@ -369,6 +387,7 @@ typedef	char	cell;
 
 /*
  * Miscellaneous random variables used in more than one place
+ * 多处使用的杂项随机变量
  */
 var	bool	aiflag;		/* Append/change/insert with autoindent */
 var	bool	anymarks;	/* We have used '[a-z] */
@@ -482,12 +501,16 @@ var	char	uxb[UXBSIZE + 2];	/* Last !command for !! */
  * Each pointer is 15 bits (the low bit is used by global) and is
  * padded with zeroes to make an index into the temp file where the
  * actual text of the line is stored.
+ * 用于访问当前文件的编辑器数据结构由指向临时文件 tfile 的 incore 指针数组组成。
+ * 每个指针是 15 位（低位由全局使用）并用零填充以对存储行的实际文本的临时文件建立索引。
  *
  * To effect undo, copies of affected lines are saved after the last
  * line considered to be in the buffer, between dol and unddol.
  * During an open or visual, which uses the command mode undo between
  * dol and unddol, a copy of the entire, pre-command buffer state
  * is saved between unddol and truedol.
+ * 为了实现撤销，受影响行的副本被保存在被认为在缓冲区中的最后一行之后，在 dol 和 unddol 之间。
+ * 在使用 dol 和 unddol 之间的命令模式 undo 的打开或视觉期间，整个预命令缓冲区状态的副本在 unddol 和 truedol 之间保存。
  */
 var	line	*addr1;			/* First addressed line in a command */
 var	line	*addr2;			/* Second addressed line */
@@ -500,17 +523,23 @@ var	line	*zero;			/* Points to empty slot before one */
 
 /*
  * Undo information
+ *撤消信息
  *
  * For most commands we save lines changed by salting them away between
  * dol and unddol before they are changed (i.e. we save the descriptors
  * into the temp file tfile which is never garbage collected).  The
  * lines put here go back after unddel, and to complete the undo
  * we delete the lines [undap1,undap2).
+ * 对于大多数命令，我们通过在更改之前将它们在 dol 和 unddol 之间加盐来保存更改的行
+ * （即，我们将描述符保存到临时文件 tfile 中，该文件永远不会被垃圾收集）。 
+ * 放在这里的行在 unddel 之后返回，为了完成撤消，我们删除了行 [undap1,undap2)。
  *
  * Undoing a move is much easier and we treat this as a special case.
  * Similarly undoing a "put" is a special case for although there
  * are lines saved between dol and unddol we don't stick these back
  * into the buffer.
+ * 撤消移动要容易得多，我们将其视为特殊情况。
+ * 同样，撤消“放置”是一种特殊情况，因为尽管在 dol 和 unddol 之间保存了一些行，但我们不会将它们粘贴回缓冲区。
  */
 var	short	undkind;
 
